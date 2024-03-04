@@ -1,19 +1,18 @@
 <template>
   <v-app>
     <v-main>
-      <HelloWorld/>
+      <NavBar/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import { defineAsyncComponent } from 'vue';
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    NavBar : defineAsyncComponent(() => import('./components/shared/components/NavbarView.vue')),
   },
 
   data: () => ({

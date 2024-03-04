@@ -1,156 +1,244 @@
 <template>
-  <v-container>
-    <v-row class="text-center">
-      <v-col cols="12">
-        <v-img
-          :src="logo"
-          class="my-3"
-          contain
-          height="200"
-        />
-      </v-col>
+  <!-- <v-navigation-drawer
+      v-model="drawer"
+    >
+    <v-list-item
+        prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg"
+        title="John Leider"
+        subtitle="ejemplo de correo"
+      ></v-list-item>
 
-      <v-col class="mb-4">
-        <h1 class="display-2 font-weight-bold mb-3">
-          Welcome to git ave
-          Hola rodrigo
-          Hola prueba
-          ultima prueba
-          Prueba de main a dev/ave
-        </h1>
+      <v-divider></v-divider>
+      <v-list-item
+        v-for="(link, index) in links"
+        :key="index"
+        :prepend-icon="link.icon"
+        :title="link.name"
+        @click="$router.push({ name: link.to })"
+        :value="link.to"
+      ></v-list-item>
 
-          <h4>Vite Preview</h4>
+      <v-list-item v-if="!userStore.token" prepend-icon="mdi-login" title="login"></v-list-item>
 
-        <p class="subheading font-weight-regular">
-          For help and collaboration with other Vuetify developers,
-          <br>please join our online
-          <a
-            href="https://community.vuetifyjs.com"
-            target="_blank"
-          >Discord Community</a>
-        </p>
-      </v-col>
+      <div v-if="userStore.token">
+        <v-list-item prepend-icon="mdi-account" :title="$t('navbar.yourAccountString')"></v-list-item>
+        <v-list-item prepend-icon="mdi-cogs" :title="$t('navbar.yourServices')"></v-list-item>
+      </div>
 
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-5">
-          What's next?
-        </h2>
+      <v-list-item v-if="theme.global.name.value === 'dark'" prepend-icon="mdi-white-balance-sunny" title="Light" @click="toggleTheme"></v-list-item>
+      <v-list-item v-if="theme.global.name.value === 'light'" prepend-icon="mdi-weather-night" title="Dark" @click="toggleTheme"></v-list-item>
+      <v-list-item v-if="this.$i18n.locale === 'en'" prepend-icon="mdi-translate" title="Español" @click="changeLanguage('es')"></v-list-item>
+      <v-list-item v-if="this.$i18n.locale === 'es'" prepend-icon="mdi-translate" title="Inglish" @click="changeLanguage('en')"></v-list-item>
 
-        <v-row justify="center">
-          <a
-            v-for="(next, i) in whatsNext"
-            :key="i"
-            :href="next.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ next.text }}
-          </a>
+      <template v-slot:append v-if="userStore.token"> 
+        <div class="pa-2">
+          <v-btn block @click="logout">
+            {{ $t('navbar.logoutString') }}
+          </v-btn>
+        </div>
+      </template>
+    </v-navigation-drawer> -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-green-darken-3 navbar-transition" clipped-left>
+    <v-container>
+      <div class="container">
+        <v-row align="center" justify="center">
+          <v-col cols="auto">
+            <router-link to="/" class="navbar-brand">
+              <div class="d-flex align-items-center">
+                <img src="https://res.cloudinary.com/dui4i9f4e/image/upload/v1697989916/logos/jgkamjqwy97zkb0hfsye.png" alt="Logo" class="logo">
+              </div>
+            </router-link>
+          </v-col>
+          <v-col cols="auto" class="d-md-none d-lg-block">
+            <p class="company-name">
+              My Garden LLC
+            </p>
+            <p class="subtitle">
+              Servicios de jardineria y mas
+            </p>
+          </v-col>
+          <!-- a este -->
+          <v-col v-if="width > pixels" cols="auto">
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ml-auto">
+                <!-- <router-link
+                  v-for="link in links"
+                  :key="link.to"
+                  :to="{ name: link.to }"
+                  class="nav-link"
+                  :class="{ 'is-active': $route.name === link.to }"
+                >
+                  <v-icon size="15" color="white">{{ link.icon }}</v-icon>{{ link.name }}
+                </router-link> -->
+                <router-link
+                  :to="{ name: 'login-login' }"
+                  class="nav-link is-active"
+                >
+                  <v-icon size="15" color="white">mdi-login</v-icon>login
+                </router-link>
+              </ul>
+            </div>
+          </v-col>
+          <!-- a este -->
+          <v-col cols="auto" class="d-flex align-items-center">
+            <!-- <v-btn icon variant="text" @click="changeLanguage('en')" class="mx-1" v-if="this.$i18n.locale === 'es' && width > pixels ">
+              <v-img
+                src="https://flagcdn.com/16x12/us.webp"
+                alt="USA"
+                width="16"
+                height="12"
+              ></v-img>
+            </v-btn>
+            <v-btn icon variant="text" @click="changeLanguage('es')" class="mx-1" v-if="this.$i18n.locale === 'en' && width > pixels " >
+              <v-img
+                src="https://flagcdn.com/16x12/mx.webp"
+                alt="Mexico"
+                width="16"
+                height="12"
+              ></v-img>
+            </v-btn> -->
+            <v-app-bar-nav-icon v-if="width < pixels"  @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+
+            <v-btn v-if="width > pixels"  icon variant="text" @click="toggleTheme" >
+              <v-icon v-if="theme.global.name.value === 'light'">mdi-moon-waning-crescent</v-icon>
+              <v-icon v-if="theme.global.name.value === 'dark'">mdi-white-balance-sunny</v-icon>
+
+            </v-btn> 
+          </v-col>
+
         </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-5">
-          Important Links
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(link, i) in importantLinks"
-            :key="i"
-            :href="link.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ link.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-5">
-          Ecosystem
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(eco, i) in ecosystem"
-            :key="i"
-            :href="eco.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ eco.text }}
-          </a>
-        </v-row>
-      </v-col>
-    </v-row>
-  </v-container>
+      </div>
+    </v-container>
+  </nav>
 </template>
 
 <script>
-import logo from '../assets/logo.svg'
+  import { useUserStore } from '@/store/userStore';
+  import { onMounted } from 'vue'
+  import { useDisplay } from 'vuetify'
+  import { useTheme } from 'vuetify'
+  const userStore = useUserStore();
+  
+  export default {
+    setup() {
+        const { width, mobile } = useDisplay()
+        const theme = useTheme()
+        const toggleTheme = () => {
+          theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+        }
+        onMounted(() => {
+          console.log(width.value) // 960
+          console.log(mobile.value) // true
+        })
+        return {
+          theme,
+          toggleTheme,
+          width,
+          mobile
+        };
+      },
+    
+    data() {
+      return {
+        links : [
+          { name: 'Home', to: 'home-home', icon: 'mdi-home' },
+          { name: 'Services', to: 'services-services', icon: 'mdi-hammer-screwdriver' },
+          { name: 'Projects', to: 'proyects-view', icon: 'mdi-briefcase' },
+          { name: 'Contact', to: 'home-contact', icon: 'mdi-email' },
+          { name: 'FaQS', to: 'home-answers', icon: 'mdi-help-circle' },
+        ],
+        drawer: false,
+        userStore,
+        pixels : 750
+      }
+    },
+    
+    methods: {
+      
+      speak (text) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(utterance);
+      },
+      profile () {
+        this.$router.push({ name: 'profile-profile' });
+      },
+      services () {
+        this.$router.push({ name: 'profile-myservices' });
+      },
+      async logout() {
+        await userStore.logout();
+        this.$router.push('/');
+      },
+      changeLanguage(lang) {
+        console.log(lang)
+      },
+      hideNavbar() {
+        const navbar = document.querySelector('.navbar-transition');
+        if (navbar) navbar.style.opacity = '0';
+      },
+      showNavbar() {
+        const navbar = document.querySelector('.navbar-transition');
+        if (navbar) navbar.style.opacity = '1';
+      }
+    },
+    mounted() {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        this.userStore.refreshToken();
+      }
+      console.log(this.$vuetify)
+      let lastScrollTop = 0; 
 
-export default {
-  name: 'HelloWorld',
+      window.addEventListener('scroll', () => {
+        let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
 
-  data: () => ({
-    ecosystem: [
-      {
-        text: 'vuetify-loader',
-        href: 'https://github.com/vuetifyjs/vuetify-loader/tree/next',
-      },
-      {
-        text: 'github',
-        href: 'https://github.com/vuetifyjs/vuetify/tree/next',
-      },
-      {
-        text: 'awesome-vuetify',
-        href: 'https://github.com/vuetifyjs/awesome-vuetify',
-      },
-    ],
-    importantLinks: [
-      {
-        text: 'Chat',
-        href: 'https://community.vuetifyjs.com',
-      },
-      {
-        text: 'Made with Vuetify',
-        href: 'https://madewithvuejs.com/vuetify',
-      },
-      {
-        text: 'Twitter',
-        href: 'https://twitter.com/vuetifyjs',
-      },
-      {
-        text: 'Articles',
-        href: 'https://medium.com/vuetify',
-      },
-    ],
-    logo,
-    whatsNext: [
-      {
-        text: 'Explore components',
-        href: 'https://vuetifyjs.com',
-      },
-      {
-        text: 'Roadmap',
-        href: 'https://vuetifyjs.com/introduction/roadmap/',
-      },
-      {
-        text: 'Frequently Asked Questions',
-        href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-      },
-    ],
-  }),
-}
+        if (currentScroll > lastScrollTop) {
+          this.hideNavbar();
+        } else {
+          this.showNavbar();
+        }
+        lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // Evita valores negativos
+      }, false);
+    },
+  };
 </script>
+
+<style scoped>
+  .logo {
+    width: 120px;
+    margin-right: 10px;
+  }
+
+  .company-name {
+    font-weight: bold;
+    font-size: 18px;
+    margin: 0;
+    color: #efe9e9;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    margin: 0;
+    color: #efe9e9;
+  }
+
+  .nav-link {
+    color: #c6c5c5;
+    padding: 0.5rem 1rem;
+  }
+
+  .is-active {
+    color: #ffffff;
+  }
+
+  .navbar-transition {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: opacity 0.5s ease-in-out;
+    opacity: 1;
+  }
+
+</style>
