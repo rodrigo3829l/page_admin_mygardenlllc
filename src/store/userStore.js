@@ -9,32 +9,34 @@ export const useUserStore = defineStore('user', () => {
     const email = ref (null);
     const rol = ref (null);
 
-    const login = async (email, pass, rol) => {
+    const login = async (email, pass) => {
         const datos = {
             email,
             password: pass,
-            rol
+            
         }
         try {
             const {data} = await api.post('/user/login', datos)
             name.value = data.name
-            rol.value = data.rol
             // email.value = data.email 
             token.value = data.token;
             expireIn.value = data.expiresIn
+            rol.value = data.rol
+            localStorage.setItem('token', token.value)
 
             setTime();
-            const resp = await api({
-                method: 'GET',
-                url : '/user/protected',
-                headers: {
-                    'Authorization' : 'Bearer ' + token.value,
-                },
-            })
-            localStorage.setItem('rol', resp.data.tipo)
-            localStorage.setItem('token', token.value)
+            // const resp = await api({
+            //     method: 'GET',
+            //     url : '/user/protected',
+            //     headers: {
+            //         'Authorization' : 'Bearer ' + token.value,
+            //     },
+            // })
+            // localStorage.setItem('rol', resp.data.tipo)
             return({exito : 'inicio se sesion exitoso'})
         } catch (error) {
+            console.log("Error deesde el store")
+            console.log(error)
             const {response} = error
             return({error: response.data.error})
         }
@@ -47,9 +49,9 @@ export const useUserStore = defineStore('user', () => {
         } catch (error) {
             console.log(error)
         } finally{
-            // localStorage.clear();
-            localStorage.removeItem('rol');
-            localStorage.removeItem('token');
+            localStorage.clear();
+            // localStorage.removeItem('rol');
+            // localStorage.removeItem('token');
             resetStore();
         }
     }
@@ -59,9 +61,9 @@ export const useUserStore = defineStore('user', () => {
         name.value = null
         email.value = null
         rol.value = null
-        // localStorage.clear();
-        localStorage.removeItem('rol');
-        localStorage.removeItem('token');
+        localStorage.clear();
+        // localStorage.removeItem('rol');
+        // localStorage.removeItem('token');
     }
     const setTime = () =>{
         setTimeout(() => {
@@ -72,28 +74,24 @@ export const useUserStore = defineStore('user', () => {
     const refreshToken = async () =>{
         try {
             const {data} = await api.get ('/user/refresh');
-            // console.log("Desde el refresh")
-            // console.log(data)
             token.value = data.token;
             expireIn.value = data.expiresIn;
             name.value = data.name
             email.value = data.email
             rol.value = data.rol
-            const resp = await api({
-                method: 'GET',
-                url : '/user/protected',
-                headers: {
-                    'Authorization' : 'Bearer ' + token.value,
-                },
-            })
-            localStorage.setItem('rol', resp.data.tipo)
+
+            // const resp = await api({
+            //     method: 'GET',
+            //     url : '/user/protected',
+            //     headers: {
+            //         'Authorization' : 'Bearer ' + token.value,
+            //     },
+            // })
+            // localStorage.setItem('rol', resp.data.tipo)
             localStorage.setItem('token', token.value,);
             setTime();
         } catch (error) {
             console.log(error)
-            // localStorage.removeItem('tipo')
-        //     localStorage.removeItem('tipo');
-        // localStorage.removeItem('venta');
         }
     }
     const initializeStore = () => {
