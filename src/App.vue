@@ -2,10 +2,9 @@
   <v-app>
     <v-main>
       <NavBar/>
-      <Login/>
+      <router-view></router-view>
     </v-main>
   </v-app>
-  
 </template>
 
 <script>
@@ -15,8 +14,8 @@ export default {
 
   components: {
     NavBar : defineAsyncComponent(() => import('./components/shared/components/NavbarView.vue')),
-    Login : defineAsyncComponent(() => import('./components/login/pages/loginAdmin.vue'))
   },
+
   data: () => ({
     //
   }),

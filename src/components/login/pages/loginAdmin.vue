@@ -12,6 +12,12 @@
             <v-divider></v-divider>
             <!-- <v-form> -->
               <label for="">Email</label>
+              <v-select
+                v-model="department"
+                variant="underlined"
+                label="Selecciona tu departamento"
+                :items="['administration', 'employed', 'finance']"
+              ></v-select>
               <v-text-field
                 v-model="email"
                 label="Insertar Email"
@@ -34,10 +40,6 @@
                 color="green-darken-3"
                 required
               ></v-text-field>
-
-              <!-- <v-card-text class="text-medium-emphasis text-caption">
-                {{ $t('login.descriptionWarningString') }}
-              </v-card-text> -->
               <v-row justify="center">
                 <v-col cols="12" sm="8" md="6" lg="16" align="center">
                   <div class="g-recaptcha" data-sitekey="6Le5gHApAAAAADv0EqDbSKVSgpcBxPFpCz6o4zVt" data-callback="onRecaptchaSuccess"></div>
@@ -51,19 +53,13 @@
                 type="submit"
                 :disabled="dialog"
                 :loading="dialog"
+                @click="login"
               >
                 <v-icon left>mdi-login</v-icon>
                 Login
               </v-btn>
-            <!-- </v-form><br> -->
             <v-divider></v-divider>
             <div class="text-center mt-5">
-              <!-- <router-link :to="{name: 'login-reistration'}">
-                <p class="mb-0">{{ $t('login.registrationString') }}<v-icon icon="mdi-chevron-right"></v-icon></p>
-              </router-link>
-              <router-link :to="{name: 'login-mail'}">
-                <p class="mb-0">{{ $t('login.forgotPasswordString') }}<v-icon icon="mdi-chevron-right"></v-icon></p>
-              </router-link> -->
             </div>
           </v-card-text>
         </v-card>
@@ -73,25 +69,58 @@
 </template>
 
 <script>
-// import { useRouter } from 'vue-router';
-// import { ref } from 'vue'
-// import { useField, useForm } from 'vee-validate'
-// import  {useUserStore} from '@/store/userStore'
-// import {i18n} from '@/main.js'
-// const userStore = useUserStore()
+import { useUserStore } from '@/store/userStore.js'
+const userStore = useUserStore()
+
 export default {
   data() {
     return {
       email : '',
       password : '',
       rol : '',
-      passwordVisible : false
+      passwordVisible : false,
+      department : '',
+      dialog : false
     }
     
   },
   methods : {
     togglePasswordVisibility () {
       this.passwordVisible = !this.passwordVisible
+    },
+    async login () {
+      this.dialog = true
+      try {
+        const email = this.email
+        const pass = this.password
+        const dpto = this.department
+        const res = await userStore.login(email, pass, dpto)
+        if(res.error){
+          alert(res.error)
+        }else{
+          alert('login hecho')
+          if(this.department !== userStore.rol ){
+            alert('No perteneces a este departamento')
+            userStore.resetStore()
+            return
+          }
+          if(userStore.rol === 'employed'){
+            this.$router.push({name : 'employeds'})
+          }
+          if(userStore.rol === 'admin'){
+            this.$router.push({name : 'admin'})
+          }
+          if(userStore.rol === 'finance'){
+            this.$router.push({name : 'finance'})
+          }
+        }
+        console.log(res);
+      } catch (error) {
+        alert('error en el login')
+        console.log(error);
+      } finally {
+        this.dialog = false
+      }
     }
   }
 }

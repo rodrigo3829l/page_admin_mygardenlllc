@@ -9,11 +9,11 @@ export const useUserStore = defineStore('user', () => {
     const email = ref (null);
     const rol = ref (null);
 
-    const login = async (email, pass) => {
+    const login = async (email, pass, department) => {
         const datos = {
             email,
             password: pass,
-            
+            department
         }
         try {
             const {data} = await api.post('/user/login', datos)
@@ -111,6 +111,7 @@ export const useUserStore = defineStore('user', () => {
         initializeStore,
         name,
         email,
-        rol
+        rol,
+        resetStore
     }
   })
