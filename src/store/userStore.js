@@ -17,6 +17,7 @@ export const useUserStore = defineStore('user', () => {
         }
         try {
             const {data} = await api.post('/user/login', datos)
+            console.log(data)
             name.value = data.name
             // email.value = data.email 
             token.value = data.token;

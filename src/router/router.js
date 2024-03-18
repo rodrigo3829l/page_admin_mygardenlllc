@@ -22,6 +22,34 @@ const routes = [
             isLoged : true,
         },
         component : () => import('../components/employeds/pages/ServicesWindow.vue')
+    },
+    {
+        path : '/admin',
+        name : 'admin',
+        meta : {
+            isLoged : true,
+        },
+        component : () => import('../components/admin/layout/AdminLayout.vue'),
+        children : [
+            {
+                path : 'quote',
+                name : 'quote',
+                component : () => import('../components/admin/cotize/pages/CotizeWindow.vue')
+            },
+            {
+                path: '',
+                name: 'default-quote',
+                redirect: {name: 'quote'},
+            },
+        ]
+    },
+    {
+        path : '/finance',
+        name : 'finance',
+        meta : {
+            isLoged : true,
+        },
+        component : () => import('../components/finance/pages/InfoPays.vue')
     }
 ]
 

@@ -22,6 +22,12 @@
             <v-col v-if="width > pixels" cols="auto">
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
+                  <v-btn 
+                  v-if="userStore.token"
+                  variant="text"
+                  @click="logout">
+                    Logout
+                  </v-btn>
                   <!-- <router-link
                     v-for="link in links"
                     :key="link.to"
@@ -31,12 +37,12 @@
                   >
                     <v-icon size="15" color="white">{{ link.icon }}</v-icon>{{ link.name }}
                   </router-link> -->
-                  <router-link
+                  <!-- <router-link
                     :to="{ name: 'login-login' }"
                     class="nav-link is-active"
                   >
                     <v-icon size="15" color="white">mdi-login</v-icon>login
-                  </router-link>
+                  </router-link> -->
                 </ul>
               </div>
             </v-col>
@@ -58,7 +64,7 @@
                   height="12"
                 ></v-img>
               </v-btn> -->
-              <v-app-bar-nav-icon v-if="width < pixels"  @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+              <v-app-bar-nav-icon   @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
   
               <v-btn v-if="width > pixels"  icon variant="text" @click="toggleTheme" >
                 <v-icon v-if="theme.global.name.value === 'light'">mdi-moon-waning-crescent</v-icon>
@@ -75,7 +81,6 @@
   
   <script>
     import { useUserStore } from '@/store/userStore';
-    import { onMounted } from 'vue'
     import { useDisplay } from 'vuetify'
     import { useTheme } from 'vuetify'
     const userStore = useUserStore();
@@ -87,10 +92,6 @@
           const toggleTheme = () => {
             theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
           }
-          onMounted(() => {
-            console.log(width.value) // 960
-            console.log(mobile.value) // true
-          })
           return {
             theme,
             toggleTheme,
@@ -102,11 +103,11 @@
       data() {
         return {
           links : [
-            { name: 'Home', to: 'home-home', icon: 'mdi-home' },
-            { name: 'Services', to: 'services-services', icon: 'mdi-hammer-screwdriver' },
-            { name: 'Projects', to: 'proyects-view', icon: 'mdi-briefcase' },
-            { name: 'Contact', to: 'home-contact', icon: 'mdi-email' },
-            { name: 'FaQS', to: 'home-answers', icon: 'mdi-help-circle' },
+            // { name: 'Home', to: 'home-home', icon: 'mdi-home' },
+            // { name: 'Services', to: 'services-services', icon: 'mdi-hammer-screwdriver' },
+            // { name: 'Projects', to: 'proyects-view', icon: 'mdi-briefcase' },
+            // { name: 'Contact', to: 'home-contact', icon: 'mdi-email' },
+            // { name: 'FaQS', to: 'home-answers', icon: 'mdi-help-circle' },
           ],
           drawer: false,
           userStore,

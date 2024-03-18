@@ -13,10 +13,12 @@
             <!-- <v-form> -->
               <label for="">Email</label>
               <v-select
+              color="green-darken-3"
                 v-model="department"
                 variant="underlined"
+                placeholder="Selecciona el departamento al que perteneces"
                 label="Selecciona tu departamento"
-                :items="['administration', 'employed', 'finance']"
+                :items="['admin', 'employed', 'finance']"
               ></v-select>
               <v-text-field
                 v-model="email"
@@ -75,11 +77,11 @@ const userStore = useUserStore()
 export default {
   data() {
     return {
-      email : '',
-      password : '',
+      email : 'finprueba@gmail.com',
+      password : 'Hola123#',
       rol : '',
       passwordVisible : false,
-      department : '',
+      department : 'finance',
       dialog : false
     }
     
@@ -98,7 +100,7 @@ export default {
         if(res.error){
           alert(res.error)
         }else{
-          alert('login hecho')
+          alert(userStore.rol)
           if(this.department !== userStore.rol ){
             alert('No perteneces a este departamento')
             userStore.resetStore()
@@ -108,7 +110,7 @@ export default {
             this.$router.push({name : 'employeds'})
           }
           if(userStore.rol === 'admin'){
-            this.$router.push({name : 'admin'})
+            this.$router.push({name : 'quote'})
           }
           if(userStore.rol === 'finance'){
             this.$router.push({name : 'finance'})
